@@ -112,4 +112,14 @@ public class StationState
 
         return true;
     }
+
+    public void ResetBool()
+    {
+        List<string> keys = new List<string>(boolValues.Keys);
+
+        foreach (string id in keys)
+        {
+            boolValues[id] = false;
+        }
+    }
 }
