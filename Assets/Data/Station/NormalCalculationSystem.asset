@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f12ffd2ff30d844c950cd2f0c05cb10, type: 3}
   m_Name: NormalCalculationSystem
   m_EditorClassIdentifier: Assembly-CSharp::StationCalculationSystem
-  parameterCalculations: []
+  parameterCalculations:
+  - targetParameter: {fileID: 11400000, guid: f7e1d06e84e043643a12f2578be2ca49, type: 2}
+    conditionParameter: {fileID: 11400000, guid: 57b0a77a57e382346a472ea8c5bb2368, type: 2}
+    baseChangePerTick: -1
+    additionalChangePerTick: 2
+  - targetParameter: {fileID: 11400000, guid: 7486b7cd2fbdb704c99a60498b32eb5c, type: 2}
+    conditionParameter: {fileID: 11400000, guid: dd1afdb7702ed9648b350348d7a8a080, type: 2}
+    baseChangePerTick: 0.5
+    additionalChangePerTick: -1

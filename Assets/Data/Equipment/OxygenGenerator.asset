@@ -12,8 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdf982ac359c3ad41ac59a04e1288638, type: 3}
   m_Name: OxygenGenerator
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentDefinition
-  id: 
-  displayName: 
-  slots: []
-  outputs: []
-  inputParameters: []
+  id: oxygenGenerator
+  displayName: "\u0413\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440 \u043A\u0438\u0441\u043B\u043E\u0440\u043E\u0434\u0430"
+  slots:
+  - id: battery
+    displayName: "\u0410\u043A\u043A\u0443\u043C\u0443\u043B\u044F\u0442\u043E\u0440"
+    component: {fileID: 11400000, guid: 478859c692d98fe44b5d81a4d6f4a7be, type: 2}
+    requiredForOperation: 0
+  - id: fuse
+    displayName: "\u041F\u0440\u0435\u0434\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044C"
+    component: {fileID: 11400000, guid: 72a4d79544776b2458c38d00252fdbb1, type: 2}
+    requiredForOperation: 0
+  - id: pump
+    displayName: "\u041D\u0430\u0441\u043E\u0441"
+    component: {fileID: 11400000, guid: e1d37f352368d5d418e81091f474304c, type: 2}
+    requiredForOperation: 1
+  - id: main_cable
+    displayName: "\u041A\u0430\u0431\u0435\u043B\u044C \u043F\u0438\u0442\u0430\u043D\u0438\u044F"
+    component: {fileID: 11400000, guid: fb3f4455c1a842444a5fbbfa656e0c59, type: 2}
+    requiredForOperation: 1
+  outputs:
+  - parameter: {fileID: 11400000, guid: 57b0a77a57e382346a472ea8c5bb2368, type: 2}
+    valueWhenOperational: 1
+  inputParameters:
+  - {fileID: 11400000, guid: 36cf4172a14a22a43a3ba2f2cbcc0ca6, type: 2}

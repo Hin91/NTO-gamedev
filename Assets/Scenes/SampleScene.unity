@@ -119,6 +119,62 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &467751709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 467751710}
+  - component: {fileID: 467751711}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &467751710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467751709}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.25799, y: -0.25828, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &467751711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 467751709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8382245dceb879d4a9d484569315fcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameTickSystem
+  safeInterval: 5
+  chanceIncreasePerTick: 0.02
+  maxChance: 0.3
+  stationParameters:
+  - {fileID: 11400000, guid: 36cf4172a14a22a43a3ba2f2cbcc0ca6, type: 2}
+  - {fileID: 11400000, guid: f7e1d06e84e043643a12f2578be2ca49, type: 2}
+  - {fileID: 11400000, guid: 57b0a77a57e382346a472ea8c5bb2368, type: 2}
+  equipmentDefinitions:
+  - {fileID: 11400000, guid: 25f9407335701564eb5424a1972f16de, type: 2}
+  - {fileID: 11400000, guid: 704a5aac87261724199c1aa9c299b8d9, type: 2}
+  calculationSystem: {fileID: 11400000, guid: 9157f0d9e553ba64492e89901fde5d15, type: 2}
+  breakdownSystem: {fileID: 11400000, guid: 65935896855229d42827a2b1dec28668, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,3 +595,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1125382472}
+  - {fileID: 467751710}
