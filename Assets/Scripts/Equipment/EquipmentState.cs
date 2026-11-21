@@ -8,6 +8,7 @@ public class EquipmentState
     private readonly Dictionary<string, ComponentState> components = new();
     private bool isOperational=true;
     public bool IsOperational => isOperational;
+    public IReadOnlyCollection<ComponentState> Components => components.Values;
 
     public EquipmentState(EquipmentDefinition definition)
     {
