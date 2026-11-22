@@ -14,6 +14,10 @@ public class GameTickSystem : MonoBehaviour
     private float currentBreakdownChance;
     private StationState stationState;
     private List<EquipmentState> equipmentStates = new();
+    private const float GameOverDelay = 10f;
+    private float lowOxygenTimer;
+    private float highTemperatureTimer;
+
 
     public float SafeInterval => safeInterval;
     public float ChanceIncreasePerTick => chanceIncreasePerTick;
@@ -44,13 +48,15 @@ public class GameTickSystem : MonoBehaviour
         calculationSystem.CalculateOutputs(equipmentStates, stationState);
         calculationSystem.CalculateFloatParameters(stationState);
 
-        Debug.Log("Game Tick!");
+        CheckGameOver();
 
-        if (stationState.TryGetBool("oxygenGeneration", out bool oxygenGeneration))
-            Debug.Log($"Oxygen generation: {oxygenGeneration}");
+        //Debug.Log("Game Tick!");
 
-        if (stationState.TryGetFloat("oxygenAmount", out float oxygenAmount))
-            Debug.Log($"Oxygen amount: {oxygenAmount}");
+        //if (stationState.TryGetBool("oxygenGeneration", out bool oxygenGeneration))
+        //    Debug.Log($"Oxygen generation: {oxygenGeneration}");
+
+        //if (stationState.TryGetFloat("oxygenAmount", out float oxygenAmount))
+        //    Debug.Log($"Oxygen amount: {oxygenAmount}");
     }
 
     private void UpdateRandomBreakdowns()
@@ -82,6 +88,36 @@ public class GameTickSystem : MonoBehaviour
                 Debug.Log("Random breakdown occurred!");
             }
         }
+    }
+    private void CheckGameOver()
+    {
+        if (stationState.TryGetFloat("oxygenAmount", out float oxygenAmount))
+        {
+            if (oxygenAmount <= 5f)
+                lowOxygenTimer += TickInterval;
+            else
+                lowOxygenTimer = 0f;
+        }
+
+        if (stationState.TryGetFloat("temperature", out float temperature))
+        {
+            if (temperature >= 40f)
+                highTemperatureTimer += TickInterval;
+            else
+                highTemperatureTimer = 0f;
+        }
+
+        if (lowOxygenTimer >= GameOverDelay ||
+            highTemperatureTimer >= GameOverDelay)
+        {
+            EndGame();
+        }
+    }
+
+    private void EndGame()
+    {
+        Debug.Log("Game Over!");
+        // Позже добавить логику поражения
     }
     private void InitializeGame()
     {
