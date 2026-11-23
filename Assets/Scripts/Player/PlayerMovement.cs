@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Tilemap wallsTilemap;
     [SerializeField] private Rigidbody2D rb;
 
+    [Header("Obstacles")]
+    [SerializeField] private LayerMask obstacleLayers;
+
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 3f;
 
@@ -19,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
 
     private List<Vector3Int> currentPath;
     private int currentPathIndex;
+
+    private EquipmentInteraction pendingInteraction;
 
     private void Awake()
     {
@@ -40,7 +45,8 @@ public class PlayerMovement : MonoBehaviour
 
         pathfinding = new GridPathfinding(
             floorTilemap,
-            wallsTilemap
+            wallsTilemap,
+            obstacleLayers
         );
     }
 
@@ -59,12 +65,42 @@ public class PlayerMovement : MonoBehaviour
         Vector3 worldPosition =
             mainCamera.ScreenToWorldPoint(screenPosition);
 
+        HandleClick(worldPosition);
+    }
+
+    private void HandleClick(Vector3 worldPosition)
+    {
+        Collider2D hit = Physics2D.OverlapPoint(
+            worldPosition,
+            obstacleLayers
+        );
+
+        if (hit != null)
+        {
+            EquipmentInteraction equipment =
+                hit.GetComponentInParent<EquipmentInteraction>();
+
+            if (equipment != null)
+            {
+                MoveToEquipment(equipment);
+            }
+
+            return;
+        }
+
         Vector3Int targetCell =
             floorTilemap.WorldToCell(worldPosition);
 
         if (!pathfinding.IsWalkable(targetCell))
             return;
 
+        pendingInteraction = null;
+
+        MoveToCell(targetCell);
+    }
+
+    private void MoveToCell(Vector3Int targetCell)
+    {
         Vector3Int startCell =
             floorTilemap.WorldToCell(transform.position);
 
@@ -77,6 +113,61 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("Путь до цели не найден.");
         }
+    }
+
+    private void MoveToEquipment(
+    EquipmentInteraction equipment)
+    {
+        currentPath = null;
+        pendingInteraction = equipment;
+
+        Collider2D equipmentCollider =
+            equipment.GetComponentInChildren<Collider2D>();
+
+        if (equipmentCollider == null)
+        {
+            Debug.LogError(
+                "У оборудования отсутствует Collider2D."
+            );
+
+            pendingInteraction = null;
+            return;
+        }
+
+        Vector3Int startCell =
+            floorTilemap.WorldToCell(transform.position);
+
+        Bounds equipmentBounds =
+            equipmentCollider.bounds;
+
+        currentPath =
+            pathfinding.FindPathToAdjacentCell(
+                startCell,
+                equipmentBounds
+            );
+
+        currentPathIndex = 0;
+
+        if (currentPath == null)
+        {
+            pendingInteraction = null;
+            Debug.Log("Нет доступного пути к оборудованию.");
+        }
+        else if (currentPath.Count == 0)
+        {
+            OpenPendingInteraction();
+        }
+    }
+
+    private bool IsAdjacent(
+        Vector3Int playerCell,
+        Vector3Int equipmentCell)
+    {
+        int distance =
+            Mathf.Abs(playerCell.x - equipmentCell.x) +
+            Mathf.Abs(playerCell.y - equipmentCell.y);
+
+        return distance == 1;
     }
 
     private void FixedUpdate()
@@ -103,12 +194,29 @@ public class PlayerMovement : MonoBehaviour
 
         rb.MovePosition(nextPosition);
 
-        if ((nextPosition - targetPosition).sqrMagnitude < 0.000001f)
+        if ((nextPosition - targetPosition).sqrMagnitude
+            < 0.000001f)
         {
             currentPathIndex++;
 
             if (currentPathIndex >= currentPath.Count)
+            {
                 currentPath = null;
+                OpenPendingInteraction();
+            }
         }
+    }
+
+    private void OpenPendingInteraction()
+    {
+        if (pendingInteraction == null)
+            return;
+
+        EquipmentInteraction equipment =
+            pendingInteraction;
+
+        pendingInteraction = null;
+
+        equipment.OpenInteraction();
     }
 }

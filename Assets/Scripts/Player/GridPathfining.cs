@@ -7,6 +7,7 @@ public class GridPathfinding
 {
     private readonly Tilemap floorTilemap;
     private readonly Tilemap wallsTilemap;
+    private readonly LayerMask obstacleLayers;
 
     private static readonly Vector3Int[] directions =
     {
@@ -31,17 +32,33 @@ public class GridPathfinding
         }
     }
 
-    public GridPathfinding(Tilemap floor, Tilemap walls)
+    public GridPathfinding(
+        Tilemap floorTilemap,
+        Tilemap wallsTilemap,
+        LayerMask obstacleLayers)
     {
-        floorTilemap = floor;
-        wallsTilemap = walls;
+        this.floorTilemap = floorTilemap;
+        this.wallsTilemap = wallsTilemap;
+        this.obstacleLayers = obstacleLayers;
     }
 
     public bool IsWalkable(Vector3Int position)
     {
-        return floorTilemap.cellBounds.Contains(position)
-            && floorTilemap.HasTile(position)
-            && !wallsTilemap.HasTile(position);
+        if (!floorTilemap.HasTile(position))
+            return false;
+
+        if (wallsTilemap.HasTile(position))
+            return false;
+
+        Vector3 worldPosition =
+            floorTilemap.GetCellCenterWorld(position);
+
+        Collider2D obstacle = Physics2D.OverlapPoint(
+            worldPosition,
+            obstacleLayers
+        );
+
+        return obstacle == null;
     }
 
     public List<Vector3Int> FindPath(
@@ -143,5 +160,57 @@ public class GridPathfinding
 
         path.Reverse();
         return path;
+    }
+    public List<Vector3Int> FindPathToAdjacentCell(
+    Vector3Int start,
+    Bounds equipmentBounds)
+    {
+        Vector3Int minCell =
+            floorTilemap.WorldToCell(equipmentBounds.min);
+
+        Vector3Int maxCell =
+            floorTilemap.WorldToCell(equipmentBounds.max);
+
+        List<Vector3Int> candidateCells = new();
+
+        for (int x = minCell.x; x <= maxCell.x; x++)
+        {
+            candidateCells.Add(
+                new Vector3Int(x, minCell.y - 1, 0));
+
+            candidateCells.Add(
+                new Vector3Int(x, maxCell.y + 1, 0));
+        }
+
+        for (int y = minCell.y; y <= maxCell.y; y++)
+        {
+            candidateCells.Add(
+                new Vector3Int(minCell.x - 1, y, 0));
+
+            candidateCells.Add(
+                new Vector3Int(maxCell.x + 1, y, 0));
+        }
+
+        List<Vector3Int> bestPath = null;
+
+        foreach (Vector3Int candidate in candidateCells)
+        {
+            if (!IsWalkable(candidate))
+                continue;
+
+            List<Vector3Int> path =
+                FindPath(start, candidate);
+
+            if (path == null)
+                continue;
+
+            if (bestPath == null ||
+                path.Count < bestPath.Count)
+            {
+                bestPath = path;
+            }
+        }
+
+        return bestPath;
     }
 }

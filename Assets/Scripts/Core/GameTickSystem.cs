@@ -7,7 +7,7 @@ public class GameTickSystem : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float chanceIncreasePerTick = 0.02f;
     [SerializeField, Range(0f, 1f)] private float maxChance = 0.3f;
     [SerializeField] private List<StationParameterDefinition> stationParameters = new();
-    [SerializeField] private List<EquipmentDefinition> equipmentDefinitions = new();
+    [SerializeField] private List<EquipmentInteraction> equipmentObjects = new();
     [SerializeField] private StationCalculationSystem calculationSystem;
     [SerializeField] private RandomBreakdownSystem breakdownSystem;
     private float safeTimer;
@@ -125,9 +125,28 @@ public class GameTickSystem : MonoBehaviour
 
         equipmentStates = new List<EquipmentState>();
 
-        foreach (EquipmentDefinition definition in equipmentDefinitions)
+        foreach (EquipmentInteraction equipmentObject in equipmentObjects)
         {
-            equipmentStates.Add(new EquipmentState(definition));
+            if (equipmentObject == null)
+            {
+                Debug.LogError("В списке equipmentObjects есть пустая ссылка.");
+                continue;
+            }
+
+            if (equipmentObject.Definition == null)
+            {
+                Debug.LogError(
+                    $"Для {equipmentObject.gameObject.name} не назначен EquipmentDefinition."
+                );
+                continue;
+            }
+
+            EquipmentState state = new EquipmentState(
+                equipmentObject.Definition
+            );
+
+            equipmentStates.Add(state);
+            equipmentObject.Initialize(state);
         }
     }
     private void Start()
