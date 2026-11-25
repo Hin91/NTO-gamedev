@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class EquipmentInteraction : MonoBehaviour
 {
-    [SerializeField] private string displayName;
+
     [SerializeField] private EquipmentDefinition definition;
     [SerializeField] private EquipmentInteractionUI interactionUI;
 
-    public string DisplayName => displayName;
+    public string DisplayName => definition.DisplayName;
     public EquipmentDefinition Definition => definition;
     public EquipmentState State { get; private set; }
 

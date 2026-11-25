@@ -78,6 +78,7 @@ public class EquipmentState
 
             if (!components.TryGetValue(slot.Id, out ComponentState component)
                 || component == null
+                || !component.IsInstalled
                 || component.IsBroken)
             {
                 isOperational = false;
@@ -86,4 +87,54 @@ public class EquipmentState
         }
         isOperational = true;
     }
+
+
+    public bool TryExtractComponent(
+        string slotId,
+        out ComponentState component)
+    {
+        component = null;
+
+        if (!components.TryGetValue(slotId, out ComponentState found))
+            return false;
+
+        if (found == null || !found.Extract())
+            return false;
+
+        components.Remove(slotId);
+        component = found;
+
+        CheckOperationalState();
+        return true;
+    }
+
+    public bool TryInstallComponent(
+        string slotId,
+        ComponentState component)
+    {
+        if (component == null || component.IsInstalled)
+            return false;
+
+        ComponentSlotDefinition slot =
+            Definition.Slots.Find(candidate => candidate.Id == slotId);
+
+        if (slot == null)
+            return false;
+
+        if (slot.Component.Id != component.Definition.Id)
+            return false;
+
+        if (components.ContainsKey(slotId))
+            return false;
+
+        if (!component.Install())
+            return false;
+
+        components.Add(slotId, component);
+
+        CheckOperationalState();
+        return true;
+    }
+
+
 }

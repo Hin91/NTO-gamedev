@@ -7,6 +7,7 @@ using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private EquipmentInteractionUI interactionUI;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Tilemap floorTilemap;
     [SerializeField] private Tilemap wallsTilemap;
@@ -52,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (interactionUI != null && interactionUI.IsOpen)
+            return;
         if (Mouse.current == null ||
             !Mouse.current.leftButton.wasPressedThisFrame)
             return;
@@ -218,5 +221,12 @@ public class PlayerMovement : MonoBehaviour
         pendingInteraction = null;
 
         equipment.OpenInteraction();
+    }
+
+    public void StopMovement()
+    {
+        currentPath = null;
+        currentPathIndex = 0;
+        pendingInteraction = null;
     }
 }
