@@ -122,4 +122,15 @@ public class StationState
             boolValues[id] = false;
         }
     }
+
+    public bool TryGetDisplayName(string id, out string displayName)
+    {
+        displayName = null;
+
+        if (!definitions.TryGetValue(id, out StationParameterDefinition definition))
+            return false;
+
+        displayName = definition.DisplayName;
+        return true;
+    }
 }

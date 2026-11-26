@@ -19,6 +19,7 @@ public class GameTickSystem : MonoBehaviour
     private float highTemperatureTimer;
 
 
+    public StationState StationState => stationState;
     public float SafeInterval => safeInterval;
     public float ChanceIncreasePerTick => chanceIncreasePerTick;
     public float MaxChance => maxChance;
