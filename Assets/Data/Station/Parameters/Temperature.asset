@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a934df5cd0dca3b4185b7d2c3d55a3f1, type: 3}
   m_Name: Temperature
   m_EditorClassIdentifier: Assembly-CSharp::StationParameterDefinition
-  id: Temperature
+  id: temperature
   displayName: "\u0422\u0435\u043C\u043F\u0435\u0440\u0430\u0442\u0443\u0440\u0430"
   valueType: 1
   defaultBoolValue: 0
